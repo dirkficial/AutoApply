@@ -116,6 +116,16 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* AutoApply color tokens */
+:root {
+  --autoapply-primary: #4A6CF7;
+  --autoapply-score-high: #10B981;
+  --autoapply-score-mid: #F59E0B;
+  --autoapply-score-low: #EF4444;
+  --autoapply-surface: #1A1A2E;
+  --autoapply-bg: #0F0F23;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
