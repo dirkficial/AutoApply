@@ -1,22 +1,28 @@
 # Current Feature
 
-<!-- Feature name and short description -->
+Dashboard UI Phase 2 — Filter bar and job feed with interactive cards.
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals & Requirements -->
+- Horizontal scrollable filter chips bar (role type, location, min match score, tech stack, remote toggle)
+- Active/inactive chip states + "Clear all" button
+- Client-side filtering against mock data
+- Job feed with header (batch count + sort toggle) and scrollable card list
+- Job cards: company logo, title, match score badge, AI summary, tech stack tags, action buttons
+- Card actions: Yes (slide right), No (fade), Skip (fade) with 200ms transitions + optimistic UI
+- Keyboard shortcuts: ↑/↓ navigate, Y/N/S act, Enter opens focus view
+- Loading shimmer skeleton cards and empty states
 
 ## Notes
 
-<!-- Any Extra Notes -->
+- Use mock data from `@src/lib/mock-data.ts` — no API calls yet
+- See full spec: @context/features/dashboard-phase-2-spec.md
 
 ## History
-
-<!-- Keep this updated. Earliest to Latest -->
 
 ### Dashboard UI Phase 1 — Completed
 
