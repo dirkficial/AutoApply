@@ -1,26 +1,26 @@
 # Current Feature
 
-Dashboard UI Phase 2 — Filter bar and job feed with interactive cards.
+Prisma ORM + Neon PostgreSQL Setup
 
 ## Status
 
-In Progress
+Completed
 
 ## Goals
 
-- Horizontal scrollable filter chips bar (role type, location, min match score, tech stack, remote toggle)
-- Active/inactive chip states + "Clear all" button
-- Client-side filtering against mock data
-- Job feed with header (batch count + sort toggle) and scrollable card list
-- Job cards: company logo, title, match score badge, AI summary, tech stack tags, action buttons
-- Card actions: Yes (slide right), No (fade), Skip (fade) with 200ms transitions + optimistic UI
-- Keyboard shortcuts: ↑/↓ navigate, Y/N/S act, Enter opens focus view
-- Loading shimmer skeleton cards and empty states
+- Install and configure Prisma 7 with Neon PostgreSQL (serverless)
+- Create `prisma/schema.prisma` with full data model from project-overview.md (User, Account, Session, VerificationToken, Job, UserJob)
+- Include NextAuth v5 adapter models
+- Add appropriate indexes and cascade deletes
+- Generate initial migration via `prisma migrate dev --name init` (never `db push`)
+- Verify migration runs cleanly against the Neon dev branch
 
 ## Notes
 
-- Use mock data from `@src/lib/mock-data.ts` — no API calls yet
-- See full spec: @context/features/dashboard-phase-2-spec.md
+- `DATABASE_URL` points to the Neon **development** branch; production branch is separate
+- Always use `prisma migrate dev` for schema changes — never `prisma db push`
+- Prisma 7 has breaking changes — read the upgrade guide before implementing
+- See full spec: @context/features/database-spec.md
 
 ## History
 
@@ -33,3 +33,26 @@ Layout shell, global styles, and top bar.
 - Dashboard route at `/dashboard` with two-panel layout (sidebar + main)
 - Top bar: AutoApply logo, Feed/Tracker/Settings nav, search input, bell, avatar; mobile hamburger menu
 - Bottom batch status bar: "Last checked: —" / "Next check in: —" (static)
+
+### Dashboard UI Phase 2 — Completed
+
+Collapsible filter sidebar and interactive job feed.
+
+- Collapsible sidebar with vertical filter sections: role type, location, min match score (range slider), tech stack (multi-select), remote only toggle, clear all
+- Job feed: header with new job count + sort toggle (best match / newest), scrollable card list
+- Job cards: company color logo, match score badge (green/amber/red), AI summary (2-line truncate), tech stack tags (monospace), Yes/Skip/No action buttons
+- Card actions: Yes (green flash 300ms), Skip/No (fade opacity) with optimistic UI
+- Loading shimmer skeleton cards and two empty states (no jobs / all decided)
+- Client-side filtering via `useJobFilters` hook; `page.tsx` stays a server component
+
+### Prisma ORM + Neon PostgreSQL Setup — Completed
+
+Database layer with Prisma 7 and Neon serverless PostgreSQL.
+
+- Installed Prisma 7 with `@prisma/adapter-pg` + `pg` driver adapter (required in v7)
+- `prisma/schema.prisma`: full schema — User, Account, Session, VerificationToken (NextAuth), Job, UserJob with enums, indexes, and cascade deletes; datasource has no `url` (moved to `prisma.config.ts` per Prisma 7)
+- `prisma.config.ts`: `defineConfig` with `dotenv/config`, datasource URL, migrations path
+- `src/lib/db.ts`: singleton `PrismaClient` using `PrismaPg` driver adapter
+- Initial migration `20260410071123_init` applied to Neon dev branch via `prisma migrate dev --name init`
+- `scripts/test-db.ts`: connectivity test (`npm run db:test`) — verifies all three tables are reachable
+- `postinstall` script auto-regenerates the Prisma client after `npm install`
