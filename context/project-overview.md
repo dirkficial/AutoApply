@@ -81,7 +81,7 @@ Other software engineers actively job searching who want to reduce the manual ov
 | Feature | Description |
 |---------|-------------|
 | 🔄 **Job Polling** | Cron job fetches new SWE listings from [SimplifyJobs/New-Grad-Positions](https://github.com/SimplifyJobs/New-Grad-Positions) and [SpeedyApply/2026-SWE-College-Jobs](https://github.com/speedyapply/2026-SWE-College-Jobs) every 4 hours. Deduplicates against previously seen jobs via `external_id`. |
-| ⚙️ **Preference Filters** | User configures once: role type, location (remote / hybrid / onsite + specific cities), experience level, tech stack, visa sponsorship, company size. Stored as JSON in user profile. |
+| ⚙️ **Preference Filters** | User configures once: role type, location (remote / hybrid / onsite + specific cities), experience level, tech stack, visa sponsorship, housing stipend, company size. Stored as JSON in user profile. |
 | 🤖 **AI Summarization** | Each new job gets a brief AI-generated summary: company context, role overview, tech stack, remote policy, and a **match score (0–100)** against the user's parsed resume. |
 | 📬 **Notification Feed** | Dashboard shows new jobs every 4 hours, sorted by match score. Each card: company logo, title, location, match badge, 2-line summary, **Yes / No / Skip** buttons. |
 | ✏️ **Resume Tailoring** | On "Yes," Gemini rewrites bullet points, reorders sections, and adjusts keywords to match the job posting. Shows a **side-by-side diff** (original vs. tailored) with highlighted changes. |
@@ -571,6 +571,12 @@ Clean, minimal, utility-first. This is a **productivity tool**, not a social app
 | **New batch indicator** | Pulse animation on the feed icon when new jobs arrive. |
 | **Loading states** | Shimmer skeleton cards while fetching / AI is processing. |
 | **Keyboard shortcuts** | `Y` = Yes, `N` = No, `S` = Skip, `→` / `←` to navigate cards. |
+
+### Reference
+
+Refer to the screenshots below as a base for the dashboard UI. It does not have to be exact. Use it as a reference
+
+- @context/screenshots/dashboard-ui.png
 
 ---
 
