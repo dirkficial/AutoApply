@@ -19,6 +19,8 @@ model User {
   sessions             Session[]
 
   // AutoApply fields
+  password             String?                   // Bcrypt hashed password (credentials auth)
+  isPro                Boolean   @default(false) // Pro tier flag
   resumeRaw            String?   @db.Text
   resumeParsed         Json?
   preferences          Json?
