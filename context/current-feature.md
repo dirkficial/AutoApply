@@ -1,31 +1,10 @@
 # Current Feature
 
-Dashboard Collections — Real Data from Database
+None
 
 ## Status
 
-In Progress
-
-## Goals
-
-- Create `src/lib/db/jobs.ts` with data fetching functions
-- Fetch jobs directly in server component (replacing mock data)
-- Keep the current design intact — no visual changes
-
-## Goals
-
-- Install and configure Prisma 7 with Neon PostgreSQL (serverless)
-- Create `prisma/schema.prisma` with full data model from project-overview.md (User, Account, Session, VerificationToken, Job, UserJob)
-- Include NextAuth v5 adapter models
-- Add appropriate indexes and cascade deletes
-- Generate initial migration via `prisma migrate dev --name init` (never `db push`)
-- Verify migration runs cleanly against the Neon dev branch
-
-## Notes
-
-- Replace dummy data from `src/lib/mock-data.ts` with real Prisma queries
-- Fetch directly in the server component — no client-side data fetching
-- See full spec: @context/features/dashboard-jobs-spec.md
+—
 
 ## History
 
@@ -50,7 +29,16 @@ Collapsible filter sidebar and interactive job feed.
 - Loading shimmer skeleton cards and two empty states (no jobs / all decided)
 - Client-side filtering via `useJobFilters` hook; `page.tsx` stays a server component
 
-### Prisma ORM + Neon PostgreSQL Setup — Completed (previously current feature)
+### Dashboard Collections — Real Data from Database — Completed
+
+Replaced mock data with live Prisma queries from Neon.
+
+- `src/lib/db/jobs.ts`: `getDashboardJobs()` fetches all jobs with `userJobs` included; reads `matchScore` and `status` from `UserJob`, falling back to `0` / `"NEW"`
+- `src/app/dashboard/page.tsx`: converted to `async` server component with `force-dynamic`; passes jobs to `DashboardClient` as `initialJobs` prop
+- `DashboardClient`, `JobFeed`, `JobCard`, `JobCardActions`, `useJobFilters`: migrated from `MockJob` to `DashboardJob` type
+- Tech stack filter options now derived from actual job data instead of hardcoded preferences
+
+### Prisma ORM + Neon PostgreSQL Setup — Completed
 
 Database layer with Prisma 7 and Neon serverless PostgreSQL.
 
