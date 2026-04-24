@@ -2,7 +2,7 @@
 
 import { ThumbsUp, SkipForward, ThumbsDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { JobStatus } from "@/lib/mock-data";
+import { JobStatus } from "@/lib/db/jobs";
 
 interface JobCardActionsProps {
   status: JobStatus;

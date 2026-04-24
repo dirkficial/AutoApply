@@ -2,14 +2,18 @@
 
 import { useState } from "react";
 import { PanelLeft } from "lucide-react";
-import { mockJobs, mockPreferences, JobStatus } from "@/lib/mock-data";
+import { DashboardJob, JobStatus } from "@/lib/db/jobs";
 import { useJobFilters } from "@/hooks/use-job-filters";
 import { cn } from "@/lib/utils";
 import { SidebarFilters } from "./sidebar-filters";
 import { JobFeed } from "./job-feed";
 import { SortMode } from "./sort-toggle";
 
-export function DashboardClient() {
+interface DashboardClientProps {
+  initialJobs: DashboardJob[];
+}
+
+export function DashboardClient({ initialJobs }: DashboardClientProps) {
   const {
     filters,
     sortMode,
@@ -22,7 +26,7 @@ export function DashboardClient() {
     setMinScore,
     toggleTechStack,
     setRemoteOnly,
-  } = useJobFilters(mockJobs);
+  } = useJobFilters(initialJobs);
 
   const [statuses, setStatuses] = useState<Record<string, JobStatus>>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -30,6 +34,11 @@ export function DashboardClient() {
   const newJobCount = filtered.filter(
     (j) => (statuses[j.id] ?? j.status) === "NEW"
   ).length;
+
+  // Collect unique tech tags from all jobs for the filter sidebar
+  const allTechStack = Array.from(
+    new Set(initialJobs.flatMap((j) => j.techStack))
+  ).sort();
 
   function handleAction(jobId: string, action: "YES" | "SKIPPED" | "REJECTED") {
     setStatuses((prev) => ({ ...prev, [jobId]: action }));
@@ -59,7 +68,7 @@ export function DashboardClient() {
         <SidebarFilters
           filters={filters}
           isAnyFilterActive={isAnyFilterActive}
-          techStackOptions={mockPreferences.techStack}
+          techStackOptions={allTechStack}
           onRoleType={setRoleType}
           onLocation={setLocation}
           onMinScore={setMinScore}
@@ -92,7 +101,7 @@ export function DashboardClient() {
           onAction={handleAction}
           onCardClick={() => {/* Phase 3: open focus view */}}
           totalNew={newJobCount}
-          lastUpdated="12 min ago"
+          lastUpdated="just now"
         />
       </div>
     </div>

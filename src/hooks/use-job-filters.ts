@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { MockJob } from "@/lib/mock-data";
+import { DashboardJob } from "@/lib/db/jobs";
 
 export type RoleType = "all" | "frontend" | "backend" | "fullstack" | "devops" | "mlai";
 export type LocationFilter =
@@ -31,7 +31,7 @@ const DEFAULT_FILTERS: Filters = {
   remoteOnly: false,
 };
 
-function matchesRole(job: MockJob, roleType: RoleType): boolean {
+function matchesRole(job: DashboardJob, roleType: RoleType): boolean {
   if (roleType === "all") return true;
   const title = job.title.toLowerCase();
   switch (roleType) {
@@ -60,7 +60,7 @@ function matchesRole(job: MockJob, roleType: RoleType): boolean {
   }
 }
 
-function matchesLocation(job: MockJob, location: LocationFilter): boolean {
+function matchesLocation(job: DashboardJob, location: LocationFilter): boolean {
   if (location === "all") return true;
   const loc = job.location.toLowerCase();
   switch (location) {
@@ -83,7 +83,7 @@ function matchesLocation(job: MockJob, location: LocationFilter): boolean {
   }
 }
 
-export function useJobFilters(jobs: MockJob[]) {
+export function useJobFilters(jobs: DashboardJob[]) {
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [sortMode, setSortMode] = useState<SortMode>("best");
 

@@ -1,13 +1,13 @@
 "use client";
 
-import { MockJob, JobStatus } from "@/lib/mock-data";
+import { DashboardJob, JobStatus } from "@/lib/db/jobs";
 import { SortMode, SortToggle } from "./sort-toggle";
 import { JobCard } from "./job-card";
 import { SkeletonCard } from "./skeleton-card";
 import { EmptyState } from "./empty-state";
 
 interface JobFeedProps {
-  jobs: MockJob[];
+  jobs: DashboardJob[];
   statuses: Record<string, JobStatus>;
   sortMode: SortMode;
   onSortChange: (mode: SortMode) => void;

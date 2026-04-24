@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { MapPin } from "lucide-react";
-import { MockJob, JobStatus } from "@/lib/mock-data";
+import { DashboardJob, JobStatus } from "@/lib/db/jobs";
 import { cn, companyColor, relativeTime } from "@/lib/utils";
 import { MatchBadge } from "./match-badge";
 import { TechTag } from "./tech-tag";
 import { JobCardActions } from "./job-card-actions";
 
 interface JobCardProps {
-  job: MockJob;
+  job: DashboardJob;
   status: JobStatus;
   onAction: (action: "YES" | "SKIPPED" | "REJECTED") => void;
   onClick: () => void;

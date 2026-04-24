@@ -1,10 +1,16 @@
 # Current Feature
 
-Prisma ORM + Neon PostgreSQL Setup
+Dashboard Collections — Real Data from Database
 
 ## Status
 
-Completed
+In Progress
+
+## Goals
+
+- Create `src/lib/db/jobs.ts` with data fetching functions
+- Fetch jobs directly in server component (replacing mock data)
+- Keep the current design intact — no visual changes
 
 ## Goals
 
@@ -17,10 +23,9 @@ Completed
 
 ## Notes
 
-- `DATABASE_URL` points to the Neon **development** branch; production branch is separate
-- Always use `prisma migrate dev` for schema changes — never `prisma db push`
-- Prisma 7 has breaking changes — read the upgrade guide before implementing
-- See full spec: @context/features/database-spec.md
+- Replace dummy data from `src/lib/mock-data.ts` with real Prisma queries
+- Fetch directly in the server component — no client-side data fetching
+- See full spec: @context/features/dashboard-jobs-spec.md
 
 ## History
 
@@ -45,7 +50,7 @@ Collapsible filter sidebar and interactive job feed.
 - Loading shimmer skeleton cards and two empty states (no jobs / all decided)
 - Client-side filtering via `useJobFilters` hook; `page.tsx` stays a server component
 
-### Prisma ORM + Neon PostgreSQL Setup — Completed
+### Prisma ORM + Neon PostgreSQL Setup — Completed (previously current feature)
 
 Database layer with Prisma 7 and Neon serverless PostgreSQL.
 
