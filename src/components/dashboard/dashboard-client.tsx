@@ -7,7 +7,6 @@ import { useJobFilters } from "@/hooks/use-job-filters";
 import { cn } from "@/lib/utils";
 import { SidebarFilters } from "./sidebar-filters";
 import { JobFeed } from "./job-feed";
-import { SortMode } from "./sort-toggle";
 
 interface DashboardClientProps {
   initialJobs: DashboardJob[];
@@ -96,10 +95,10 @@ export function DashboardClient({ initialJobs }: DashboardClientProps) {
         <JobFeed
           jobs={filtered}
           statuses={statuses}
-          sortMode={sortMode as SortMode}
+          sortMode={sortMode}
           onSortChange={(mode) => setSortMode(mode)}
           onAction={handleAction}
-          onCardClick={() => {/* Phase 3: open focus view */}}
+          onCardClick={() => {}}
           totalNew={newJobCount}
           lastUpdated="just now"
         />

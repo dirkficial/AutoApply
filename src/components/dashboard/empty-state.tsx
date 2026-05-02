@@ -4,10 +4,9 @@ type EmptyStateVariant = "no-jobs" | "all-decided";
 
 interface EmptyStateProps {
   variant: EmptyStateVariant;
-  onViewSkipped?: () => void;
 }
 
-export function EmptyState({ variant, onViewSkipped }: EmptyStateProps) {
+export function EmptyState({ variant }: EmptyStateProps) {
   if (variant === "no-jobs") {
     return (
       <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
@@ -28,14 +27,6 @@ export function EmptyState({ variant, onViewSkipped }: EmptyStateProps) {
       <p className="text-sm font-medium text-foreground">
         You&apos;ve reviewed all jobs in this batch. Nice work.
       </p>
-      {onViewSkipped && (
-        <button
-          onClick={onViewSkipped}
-          className="mt-3 text-xs text-[var(--autoapply-primary)] hover:underline"
-        >
-          View skipped jobs
-        </button>
-      )}
     </div>
   );
 }

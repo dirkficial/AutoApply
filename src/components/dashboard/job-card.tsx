@@ -25,7 +25,7 @@ export function JobCard({ job, status, onAction, onClick }: JobCardProps) {
   }
 
   const bgColor = companyColor(job.company);
-  const initial = job.company[0].toUpperCase();
+  const initial = job.company?.[0]?.toUpperCase() ?? "?";
   const isDecided = status === "REJECTED" || status === "SKIPPED";
 
   return (
