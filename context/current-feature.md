@@ -1,21 +1,21 @@
 # Current Feature
 
-## Code Quality Quick Wins (Post-Scan Cleanup)
-
-Small, safe fixes from the code scanner audit. No architectural changes, no new features.
-
-### Tasks
-
-- [x] Fix `JobCard` crash on empty `companyName` — guard `job.company[0]` access (`job-card.tsx:28`)
-- [x] Fix `relativeTime()` returning negative strings for future-dated timestamps — add `if (diffMs < 0) return "just now"` (`utils.ts:27-37`)
-- [x] Remove dead `onViewSkipped` prop and button from `EmptyState` (`empty-state.tsx:6,31-36`)
-- [x] Consolidate `SortMode` type into `src/types/dashboard.ts` and remove the `as SortMode` cast in `dashboard-client.tsx:99`
+None
 
 ## Status
 
-In Progress
+—
 
 ## History
+
+### Code Quality Quick Wins — Completed
+
+Four low-risk fixes from post-scan audit.
+
+- `job-card.tsx`: guarded `company[0]` access with optional chaining + `?? "?"` to prevent crash on empty `companyName`
+- `utils.ts`: added `diffMs < 0` and `diffMins < 1` guards in `relativeTime()` to return `"just now"` instead of negative strings
+- `empty-state.tsx`: removed dead `onViewSkipped` prop and "View skipped jobs" button (never passed by any caller)
+- `src/types/dashboard.ts`: new single source of truth for `SortMode`; `use-job-filters.ts` and `sort-toggle.tsx` now import/re-export from there; removed `as SortMode` cast and stale import from `dashboard-client.tsx`
 
 ### Dashboard UI Phase 1 — Completed
 
