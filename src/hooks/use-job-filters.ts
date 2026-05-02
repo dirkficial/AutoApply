@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { DashboardJob } from "@/lib/db/jobs";
+import { SortMode } from "@/types/dashboard";
 
+export type { SortMode };
 export type RoleType = "all" | "frontend" | "backend" | "fullstack" | "devops" | "mlai";
 export type LocationFilter =
   | "all"
@@ -13,7 +15,6 @@ export type LocationFilter =
   | "nyc"
   | "austin"
   | "seattle";
-export type SortMode = "best" | "newest";
 
 export interface Filters {
   roleType: RoleType;

@@ -1,8 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { SortMode } from "@/types/dashboard";
 
-export type SortMode = "best" | "newest";
+export type { SortMode };
 
 interface SortToggleProps {
   value: SortMode;

@@ -1,10 +1,19 @@
 # Current Feature
 
-None
+## Code Quality Quick Wins (Post-Scan Cleanup)
+
+Small, safe fixes from the code scanner audit. No architectural changes, no new features.
+
+### Tasks
+
+- [x] Fix `JobCard` crash on empty `companyName` — guard `job.company[0]` access (`job-card.tsx:28`)
+- [x] Fix `relativeTime()` returning negative strings for future-dated timestamps — add `if (diffMs < 0) return "just now"` (`utils.ts:27-37`)
+- [x] Remove dead `onViewSkipped` prop and button from `EmptyState` (`empty-state.tsx:6,31-36`)
+- [x] Consolidate `SortMode` type into `src/types/dashboard.ts` and remove the `as SortMode` cast in `dashboard-client.tsx:99`
 
 ## Status
 
-—
+In Progress
 
 ## History
 
