@@ -17,6 +17,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return session
     },
   },
+  pages: { signIn: '/sign-in' },
   ...authConfig,
   providers: [
     GitHub,

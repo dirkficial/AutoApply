@@ -8,6 +8,21 @@ None
 
 ## History
 
+### Auth UI — Sign In, Register & Sign Out — Completed
+
+Custom auth pages, reusable `UserAvatar`, and sidebar user footer with dropdown.
+
+- `src/components/providers.tsx`: `SessionProvider` wrapper added to root layout
+- `src/auth.ts`: added `pages: { signIn: '/sign-in' }` to use custom sign-in page
+- `src/proxy.ts`: redirect updated from `/api/auth/signin` to `/sign-in`
+- `src/app/sign-in/page.tsx`: custom sign-in — email/password form (`signIn('credentials', { redirect: false })`), GitHub button, error display, link to `/register`; wrapped in `<Suspense>` for `useSearchParams`
+- `src/app/register/page.tsx`: registration form — POSTs to `/api/auth/register`, client-side password-match guard, redirects to `/sign-in` on success
+- `src/components/ui/user-avatar.tsx`: reusable avatar — shows `AvatarImage` if `image` is set, otherwise initials (up to 2 chars) on primary background
+- `src/components/dashboard/dashboard-client.tsx`: sidebar footer with `DropdownMenu` on avatar click — "Profile" → `/profile`, "Sign out" → `signOut({ callbackUrl: '/sign-in' })`; user name displayed inline
+- `src/components/layout/top-bar.tsx`: replaced `mockUser` with `useSession()` + `UserAvatar`
+
+## History
+
 ### Auth Credentials — Email/Password Provider — Completed
 
 Added Credentials provider alongside GitHub OAuth, with registration endpoint.
@@ -16,8 +31,6 @@ Added Credentials provider alongside GitHub OAuth, with registration endpoint.
 - `src/auth.ts`: overrides Credentials with real bcrypt validation — looks up user by email, compares hash, returns user or null; `providers` array is explicit `[GitHub, Credentials(real)]` to avoid duplication
 - `src/app/api/auth/register/route.ts`: `POST` endpoint — validates all fields present, passwords match, checks for existing email (409), bcrypt-hashes at cost 12, creates user (201)
 - `password String?` field was already in schema from prior migration; no new migration needed
-
-## History
 
 ### Auth Setup — NextAuth + GitHub Provider — Completed
 
