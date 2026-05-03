@@ -8,6 +8,19 @@ None
 
 ## History
 
+### Auth Setup — NextAuth + GitHub Provider — Completed
+
+NextAuth v5 with GitHub OAuth, split config pattern, and `/dashboard` route protection.
+
+- Installed `next-auth@beta` and `@auth/prisma-adapter`
+- `src/auth.config.ts`: edge-compatible config with GitHub provider only (no adapter)
+- `src/auth.ts`: full config with PrismaAdapter, JWT strategy, and session callback that injects `user.id` from `token.sub`
+- `src/app/api/auth/[...nextauth]/route.ts`: exports GET/POST handlers from `auth.ts`
+- `src/proxy.ts`: named `proxy` export wrapping `auth()`; redirects unauthenticated requests to `/api/auth/signin` for all `/dashboard/*` routes
+- `src/types/next-auth.d.ts`: extends `Session` type with `user.id: string`
+
+## History
+
 ### Code Quality Quick Wins — Completed
 
 Four low-risk fixes from post-scan audit.
