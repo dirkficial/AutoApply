@@ -8,6 +8,17 @@ None
 
 ## History
 
+### Auth Credentials — Email/Password Provider — Completed
+
+Added Credentials provider alongside GitHub OAuth, with registration endpoint.
+
+- `src/auth.config.ts`: added Credentials provider with no-op `authorize: () => null` (edge-safe placeholder)
+- `src/auth.ts`: overrides Credentials with real bcrypt validation — looks up user by email, compares hash, returns user or null; `providers` array is explicit `[GitHub, Credentials(real)]` to avoid duplication
+- `src/app/api/auth/register/route.ts`: `POST` endpoint — validates all fields present, passwords match, checks for existing email (409), bcrypt-hashes at cost 12, creates user (201)
+- `password String?` field was already in schema from prior migration; no new migration needed
+
+## History
+
 ### Auth Setup — NextAuth + GitHub Provider — Completed
 
 NextAuth v5 with GitHub OAuth, split config pattern, and `/dashboard` route protection.
@@ -18,8 +29,6 @@ NextAuth v5 with GitHub OAuth, split config pattern, and `/dashboard` route prot
 - `src/app/api/auth/[...nextauth]/route.ts`: exports GET/POST handlers from `auth.ts`
 - `src/proxy.ts`: named `proxy` export wrapping `auth()`; redirects unauthenticated requests to `/api/auth/signin` for all `/dashboard/*` routes
 - `src/types/next-auth.d.ts`: extends `Session` type with `user.id: string`
-
-## History
 
 ### Code Quality Quick Wins — Completed
 
