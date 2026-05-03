@@ -2,23 +2,18 @@
 
 import { useState } from "react";
 import { Bell, Menu, X, Zap } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { cn } from "@/lib/utils";
-import { mockUser } from "@/lib/mock-data";
 
 const navItems = ["Feed", "Tracker", "Settings"] as const;
 
 export function TopBar() {
   const [activeNav, setActiveNav] = useState<string>("Feed");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const initials = mockUser.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
+  const { data: session } = useSession();
 
   return (
     <header className="h-14 border-b border-border bg-[var(--autoapply-bg)] flex items-center px-4 gap-4 sticky top-0 z-50">
@@ -61,11 +56,10 @@ export function TopBar() {
         <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
           <Bell className="w-4 h-4" />
         </Button>
-        <Avatar className="h-8 w-8">
-          <AvatarFallback className="bg-[var(--autoapply-primary)] text-white text-xs font-medium">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar
+          name={session?.user?.name}
+          image={session?.user?.image}
+        />
 
         {/* Mobile menu toggle */}
         <Button

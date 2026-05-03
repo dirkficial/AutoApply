@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const inter = Inter({
@@ -27,7 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("dark", inter.variable, jetbrainsMono.variable)}>
       <body>
-        <TooltipProvider>{children}</TooltipProvider>
+        <Providers>
+          <TooltipProvider>{children}</TooltipProvider>
+        </Providers>
       </body>
     </html>
   );
