@@ -1,9 +1,10 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { toast } from 'sonner'
 import { Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,8 +14,18 @@ function SignInForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') ?? '/dashboard'
   const urlError = searchParams.get('error')
+  const registered = searchParams.get('registered') === 'true'
 
+  const toasted = useRef(false)
   const [email, setEmail] = useState('')
+
+  useEffect(() => {
+    if (registered && !toasted.current) {
+      toasted.current = true
+      toast.success('Account created! You can now sign in.')
+      router.replace('/sign-in')
+    }
+  }, [registered, router])
   const [password, setPassword] = useState('')
   const [error, setError] = useState(urlError ? 'Invalid credentials.' : '')
   const [loading, setLoading] = useState(false)

@@ -40,8 +40,9 @@ export default function RegisterPage() {
     if (!res.ok) {
       setError(data.error ?? 'Something went wrong.')
     } else {
-      router.push('/sign-in')
+      router.push('/sign-in?registered=true')
     }
+
   }
 
   return (

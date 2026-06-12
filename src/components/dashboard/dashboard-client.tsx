@@ -2,19 +2,9 @@
 
 import { useState } from "react";
 import { PanelLeft } from "lucide-react";
-import { useSession, signOut } from "next-auth/react";
-import Link from "next/link";
 import { DashboardJob, JobStatus } from "@/lib/db/jobs";
 import { useJobFilters } from "@/hooks/use-job-filters";
 import { cn } from "@/lib/utils";
-import { UserAvatar } from "@/components/ui/user-avatar";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import { SidebarFilters } from "./sidebar-filters";
 import { JobFeed } from "./job-feed";
 
@@ -23,7 +13,6 @@ interface DashboardClientProps {
 }
 
 export function DashboardClient({ initialJobs }: DashboardClientProps) {
-  const { data: session } = useSession();
   const {
     filters,
     sortMode,
@@ -89,33 +78,6 @@ export function DashboardClient({ initialJobs }: DashboardClientProps) {
           />
         </div>
 
-        {/* User footer */}
-        <div className="shrink-0 border-t border-border p-3 flex items-center gap-2.5">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="shrink-0 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--autoapply-primary)]">
-              <UserAvatar
-                name={session?.user?.name}
-                image={session?.user?.image}
-                size="sm"
-              />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="top" align="start" className="w-44">
-              <Link href="/profile">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-              </Link>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-red-400 focus:text-red-400"
-                onClick={() => signOut({ callbackUrl: "/sign-in" })}
-              >
-                Sign out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <p className="flex-1 min-w-0 text-xs font-medium text-foreground truncate">
-            {session?.user?.name ?? "—"}
-          </p>
-        </div>
       </aside>
 
       {/* Main content */}
