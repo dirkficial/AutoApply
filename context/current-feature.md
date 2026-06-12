@@ -1,27 +1,32 @@
 # Current Feature
 
-None
-
 ## Status
 
-—
+Not Started
+
+## Goals
+
+<!-- Add goals here -->
+
+## Notes
+
+<!-- Add notes here -->
 
 ## History
 
 ### Auth UI — Sign In, Register & Sign Out — Completed
 
-Custom auth pages, reusable `UserAvatar`, and sidebar user footer with dropdown.
+Custom auth pages, top-bar account dropdown, reusable `UserAvatar`, and registration toast.
 
 - `src/components/providers.tsx`: `SessionProvider` wrapper added to root layout
 - `src/auth.ts`: added `pages: { signIn: '/sign-in' }` to use custom sign-in page
-- `src/proxy.ts`: redirect updated from `/api/auth/signin` to `/sign-in`
-- `src/app/sign-in/page.tsx`: custom sign-in — email/password form (`signIn('credentials', { redirect: false })`), GitHub button, error display, link to `/register`; wrapped in `<Suspense>` for `useSearchParams`
-- `src/app/register/page.tsx`: registration form — POSTs to `/api/auth/register`, client-side password-match guard, redirects to `/sign-in` on success
+- `src/proxy.ts`: redirect updated to `/sign-in`
+- `src/app/sign-in/page.tsx`: custom sign-in — email/password form, GitHub OAuth button, error display, link to `/register`; fires `toast.success` when arriving from registration (`?registered=true`); ref guard prevents double-fire from React Strict Mode
+- `src/app/register/page.tsx`: registration form — POSTs to `/api/auth/register`, client-side password-match guard, redirects to `/sign-in?registered=true` on success
 - `src/components/ui/user-avatar.tsx`: reusable avatar — shows `AvatarImage` if `image` is set, otherwise initials (up to 2 chars) on primary background
-- `src/components/dashboard/dashboard-client.tsx`: sidebar footer with `DropdownMenu` on avatar click — "Profile" → `/profile`, "Sign out" → `signOut({ callbackUrl: '/sign-in' })`; user name displayed inline
-- `src/components/layout/top-bar.tsx`: replaced `mockUser` with `useSession()` + `UserAvatar`
-
-## History
+- `src/components/layout/top-bar.tsx`: `UserAvatar` wrapped in `DropdownMenu` — header shows user name + email, items: Profile, Settings, Sign out
+- `src/components/dashboard/dashboard-client.tsx`: removed sidebar user footer; top bar is sole account entry point
+- `src/components/ui/sonner.tsx`: Sonner toast component added via shadcn; `<Toaster />` mounted in root layout
 
 ### Auth Credentials — Email/Password Provider — Completed
 

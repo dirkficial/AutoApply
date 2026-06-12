@@ -2,10 +2,18 @@
 
 import { useState } from "react";
 import { Bell, Menu, X, Zap } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 const navItems = ["Feed", "Tracker", "Settings"] as const;
@@ -14,6 +22,7 @@ export function TopBar() {
   const [activeNav, setActiveNav] = useState<string>("Feed");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: session } = useSession();
+  const router = useRouter();
 
   return (
     <header className="h-14 border-b border-border bg-[var(--autoapply-bg)] flex items-center px-4 gap-4 sticky top-0 z-50">
@@ -56,10 +65,40 @@ export function TopBar() {
         <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
           <Bell className="w-4 h-4" />
         </Button>
-        <UserAvatar
-          name={session?.user?.name}
-          image={session?.user?.image}
-        />
+        <DropdownMenu>
+          <DropdownMenuTrigger className="rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--autoapply-primary)]">
+            <UserAvatar
+              name={session?.user?.name}
+              image={session?.user?.image}
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="bottom" align="end" className="w-52">
+            <div className="px-2 py-2">
+              <p className="text-sm font-medium text-foreground truncate">
+                {session?.user?.name ?? "—"}
+              </p>
+              {session?.user?.email && (
+                <p className="text-xs text-muted-foreground truncate">
+                  {session.user.email}
+                </p>
+              )}
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => router.push("/profile")}>
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/settings")}>
+              Settings
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="text-red-400 focus:text-red-400"
+              onClick={() => signOut({ callbackUrl: "/sign-in" })}
+            >
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Mobile menu toggle */}
         <Button
