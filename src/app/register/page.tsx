@@ -40,7 +40,7 @@ export default function RegisterPage() {
     if (!res.ok) {
       setError(data.error ?? 'Something went wrong.')
     } else {
-      router.push('/sign-in?registered=true')
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`)
     }
 
   }
