@@ -12,6 +12,10 @@ export const proxy = auth(function proxy(req) {
   if (isDashboard && !isLoggedIn) {
     return Response.redirect(new URL('/sign-in', nextUrl))
   }
+
+  if (isDashboard && isLoggedIn && !req.auth?.user?.emailVerified) {
+    return Response.redirect(new URL('/verify-email', nextUrl))
+  }
 })
 
 export const config = {

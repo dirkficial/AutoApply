@@ -9,14 +9,6 @@ import authConfig from './auth.config'
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(db),
   session: { strategy: 'jwt' },
-  callbacks: {
-    session({ session, token }) {
-      if (token.sub) {
-        session.user.id = token.sub
-      }
-      return session
-    },
-  },
   pages: { signIn: '/sign-in' },
   ...authConfig,
   providers: [
@@ -44,4 +36,33 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async signIn({ user, account }) {
+      // OAuth users are pre-verified by their provider — mark them immediately
+      const u = user as { emailVerified?: Date | null; id?: string }
+      if (account?.provider !== 'credentials' && !u.emailVerified) {
+        await db.user.update({
+          where: { id: u.id as string },
+          data: { emailVerified: new Date() },
+        })
+        u.emailVerified = new Date()
+      }
+      return true
+    },
+    jwt({ token, user }) {
+      if (user) {
+        token.emailVerified = (user as { emailVerified?: Date | null }).emailVerified ?? null
+      }
+      return token
+    },
+    session({ session, token }) {
+      if (token.sub) {
+        session.user.id = token.sub
+      }
+      if ('emailVerified' in token) {
+        session.user.emailVerified = token.emailVerified as Date | null
+      }
+      return session
+    },
+  },
 })

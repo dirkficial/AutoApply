@@ -1,16 +1,27 @@
-# Current Feature
+# Current Feature: Email Verification on Register
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Send a verification email to new users upon registration using Resend
+- Email contains a unique, time-limited verification link
+- Unverified users cannot access protected routes (dashboard)
+- Clicking the link marks the user as verified in the database
+- Verified users are redirected to the dashboard (or sign-in) after verification
 
 ## Notes
 
-<!-- Add notes here -->
+- `RESEND_API_KEY` is already in `.env`
+- NextAuth v5 has a built-in `emailVerified` field on the `User` model — use it
+- Need a `VerificationToken` table entry to store the token (already in schema via NextAuth adapter)
+- Token should expire (e.g., 24 hours)
+- Registration flow: POST `/api/auth/register` → create user → generate token → send email → redirect to a "check your email" page
+- Middleware/proxy must block unverified users from `/dashboard/*` (check `emailVerified` on session or re-query DB)
+- Use Resend SDK (`resend` npm package) for sending email
+- Email sender: use a verified domain or `onboarding@resend.dev` for dev
 
 ## History
 

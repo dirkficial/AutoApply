@@ -16,18 +16,30 @@ function SignInForm() {
   const urlError = searchParams.get('error')
   const registered = searchParams.get('registered') === 'true'
 
+  const verified = searchParams.get('verified') === 'true'
+
   const toasted = useRef(false)
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(
+    urlError === 'invalid-token' ? 'Verification link is invalid or expired.' : urlError ? 'Invalid credentials.' : '',
+  )
 
   useEffect(() => {
     if (registered && !toasted.current) {
       toasted.current = true
-      toast.success('Account created! You can now sign in.')
+      toast.success('Account created! Please check your email to verify.')
       router.replace('/sign-in')
     }
   }, [registered, router])
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(urlError ? 'Invalid credentials.' : '')
+
+  useEffect(() => {
+    if (verified && !toasted.current) {
+      toasted.current = true
+      toast.success('Email verified! You can now sign in.')
+      router.replace('/sign-in')
+    }
+  }, [verified, router])
   const [loading, setLoading] = useState(false)
 
   async function handleCredentials(e: React.FormEvent) {

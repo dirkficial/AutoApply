@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
+import { randomUUID } from 'crypto'
 import { db } from '@/lib/db'
+import { sendVerificationEmail } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
@@ -24,6 +26,19 @@ export async function POST(req: NextRequest) {
   await db.user.create({
     data: { name, email, password: hashed },
   })
+
+  const token = randomUUID()
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000)
+
+  await db.verificationToken.create({
+    data: { identifier: email, token, expires },
+  })
+
+  const protocol = req.headers.get('x-forwarded-proto') ?? 'http'
+  const host = req.headers.get('host') ?? 'localhost:3000'
+  const baseUrl = `${protocol}://${host}`
+
+  await sendVerificationEmail(email, token, baseUrl)
 
   return NextResponse.json({ success: true }, { status: 201 })
 }

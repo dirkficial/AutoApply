@@ -14,4 +14,12 @@ export default {
       authorize: () => null,
     }),
   ],
+  callbacks: {
+    session({ session, token }) {
+      if ('emailVerified' in token) {
+        session.user.emailVerified = token.emailVerified as Date | null
+      }
+      return session
+    },
+  },
 } satisfies NextAuthConfig
