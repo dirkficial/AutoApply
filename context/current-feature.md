@@ -1,16 +1,28 @@
-# Current Feature
+# Current Feature: Profile Page
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Create a `/profile` route (protected, requires auth)
+- Display user info: avatar (GitHub image or initials), name, email, member since date
+- Show job pipeline stats fetched from `UserJob`: total seen, applied, interviewing, offers, and response rate
+- Show "Change password" section for credentials users only (hidden for OAuth-only accounts with no `password` field)
+- Show "Delete account" with a confirmation dialog before permanently deleting the user and all related data
+- Follow the server `page.tsx` + client `*-form.tsx` split pattern established in auth pages
 
 ## Notes
 
-<!-- Add notes here -->
+- Stats come from `db.userJob.groupBy({ by: ['status'] })` for the current user — count each `UserJobStatus` bucket
+- Response rate = `(INTERVIEWING + OFFER) / APPLIED * 100`, show `—` if no applications yet
+- "Change password" POSTs to a new `POST /api/auth/change-password` route: validates current password via bcrypt, hashes new password, updates user — only rendered if `user.password` is set (credentials user)
+- "Delete account" POSTs to a new `DELETE /api/auth/delete-account` route: re-authenticates with current password (credentials) or skips password check (OAuth), deletes user (cascades via Prisma), signs out, redirects to `/`
+- Confirmation dialog for delete: use shadcn `AlertDialog` component
+- Reuse `UserAvatar` component (`src/components/ui/user-avatar.tsx`) for the profile avatar display
+- Top bar "Profile" dropdown item already links to `/profile` — no nav changes needed
+- Route protection: redirect unauthenticated users to `/sign-in` (server-side via `auth()` in page.tsx)
 
 ## History
 
