@@ -4,6 +4,8 @@ import { randomUUID } from 'crypto'
 import { db } from '@/lib/db'
 import { sendVerificationEmail } from '@/lib/email'
 
+const emailVerificationEnabled = process.env.REQUIRE_EMAIL_VERIFICATION !== 'false'
+
 export async function POST(req: NextRequest) {
   const body = await req.json()
   const { name, email, password, confirmPassword } = body
@@ -23,6 +25,13 @@ export async function POST(req: NextRequest) {
 
   const hashed = await bcrypt.hash(password, 12)
 
+  if (!emailVerificationEnabled) {
+    await db.user.create({
+      data: { name, email, password: hashed, emailVerified: new Date() },
+    })
+    return NextResponse.json({ success: true, redirectTo: '/sign-in?registered=true' }, { status: 201 })
+  }
+
   await db.user.create({
     data: { name, email, password: hashed },
   })
@@ -40,5 +49,8 @@ export async function POST(req: NextRequest) {
 
   await sendVerificationEmail(email, token, baseUrl)
 
-  return NextResponse.json({ success: true }, { status: 201 })
+  return NextResponse.json(
+    { success: true, redirectTo: `/verify-email?email=${encodeURIComponent(email)}` },
+    { status: 201 },
+  )
 }
