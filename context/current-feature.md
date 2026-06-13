@@ -1,26 +1,26 @@
-# Current Feature: Email Verification Toggle
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add `REQUIRE_EMAIL_VERIFICATION` env var (default `true`) to toggle verification on/off
-- When disabled: registration auto-verifies the user (`emailVerified = now`) and skips the email send entirely
-- When disabled: register redirects straight to sign-in instead of the "check your email" page
-- No changes needed to the proxy or middleware — they already key off `emailVerified` in the DB
+<!-- Add goals here -->
 
 ## Notes
 
-- Set `REQUIRE_EMAIL_VERIFICATION=false` in `.env` to disable (e.g. during dev without a verified Resend domain)
-- Implementation: single helper `src/lib/email-verification.ts` that exports `isEmailVerificationEnabled()`
-- Register route reads the flag; if disabled, sets `emailVerified: new Date()` on user creation and skips token + Resend call
-- Register page: on 201 response, server should tell the client where to redirect — add `{ redirectTo: '/sign-in?registered=true' | '/verify-email?email=...' }` to the response body
-- The `?registered=true` toast on sign-in already exists — reuse it for the disabled-verification flow
-- Add `REQUIRE_EMAIL_VERIFICATION=true` to `.env.example` with a comment
+<!-- Add notes here -->
 
 ## History
+
+### Email Verification Toggle — Completed
+
+`REQUIRE_EMAIL_VERIFICATION` env var to bypass the email flow in dev (e.g. no verified Resend domain).
+
+- `.env`: set to `"false"` for local dev; set to `"true"` (or omit) for production
+- `src/app/api/auth/register/route.ts`: checks flag at module load; when disabled, creates user with `emailVerified: new Date()` and returns `redirectTo: '/sign-in?registered=true'`; when enabled, sends email and returns `redirectTo: '/verify-email?email=...'`
+- `src/app/register/page.tsx`: follows `data.redirectTo` from the API response instead of a hardcoded path
 
 ### Email Verification on Register — Completed
 
