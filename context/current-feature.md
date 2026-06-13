@@ -1,28 +1,30 @@
-# Current Feature: Forgot Password
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a "Forgot password?" link on the sign-in page
-- Build a `/forgot-password` page where users enter their email
-- Build a `POST /api/auth/forgot-password` route that generates a `VerificationToken` and sends a reset email via Resend
-- Build a `/reset-password?token=...` page where users enter and confirm a new password
-- Build a `POST /api/auth/reset-password` route that validates the token, updates the password hash, and deletes the token
-- Token expires after 1 hour; show a clear error if expired or invalid
+<!-- Add goals here -->
 
 ## Notes
 
-- Reuse the existing `VerificationToken` model (fields: `identifier`, `token`, `expires`) — `identifier` = user's email, `token` = random UUID
-- Follow the same pattern as email verification: generate token → send email → validate on use → delete token
-- Only allow reset for accounts with a `password` field (credentials users); OAuth-only users have no password to reset — show a friendly message
-- Use the existing `sendVerificationEmail` pattern in `src/lib/email.ts` as a reference for the new `sendPasswordResetEmail` helper
-- Respect `REQUIRE_EMAIL_VERIFICATION` env pattern for consistency but do NOT skip sending reset emails (reset email must always send)
-- After a successful reset, redirect to `/sign-in?reset=true` and show a toast on the sign-in page
+<!-- Add notes here -->
 
 ## History
+
+### Forgot Password — Completed
+
+Token-based password reset for credentials users. OAuth-only accounts (no `password` field) are silently skipped. All auth pages refactored to server `page.tsx` + client `*-form.tsx` split.
+
+- `src/lib/email.ts`: `sendPasswordResetEmail(email, token, baseUrl)` helper — 1hr expiry link
+- `src/app/api/auth/forgot-password/route.ts`: `POST` — generates `VerificationToken` with `identifier: reset:<email>`, deletes any existing token first, sends reset email; always returns `{ ok: true }` to avoid email enumeration
+- `src/app/api/auth/reset-password/route.ts`: `POST` — validates token + identifier match, checks expiry, guards against deleted user, bcrypt-hashes new password at cost 12, deletes token, returns 200
+- `src/app/forgot-password/page.tsx` + `forgot-password-form.tsx`: server page shell + client form; shows confirmation state after submit
+- `src/app/reset-password/page.tsx` + `reset-password-form.tsx`: server page reads `token` + `email` from `searchParams`, passes as props to client form; invalid-link state handled in client
+- `src/app/sign-in/page.tsx` + `sign-in-form.tsx`: refactored to server/client split; added `?reset=true` toast and "Forgot password?" link below password field
+- `src/app/register/page.tsx` + `register-form.tsx`: refactored to server/client split (no logic change)
 
 ### Email Verification Toggle — Completed
 
