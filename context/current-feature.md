@@ -1,29 +1,34 @@
-# Current Feature: Email Verification on Register
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Send a verification email to new users upon registration using Resend
-- Email contains a unique, time-limited verification link
-- Unverified users cannot access protected routes (dashboard)
-- Clicking the link marks the user as verified in the database
-- Verified users are redirected to the dashboard (or sign-in) after verification
+<!-- Add goals here -->
 
 ## Notes
 
-- `RESEND_API_KEY` is already in `.env`
-- NextAuth v5 has a built-in `emailVerified` field on the `User` model — use it
-- Need a `VerificationToken` table entry to store the token (already in schema via NextAuth adapter)
-- Token should expire (e.g., 24 hours)
-- Registration flow: POST `/api/auth/register` → create user → generate token → send email → redirect to a "check your email" page
-- Middleware/proxy must block unverified users from `/dashboard/*` (check `emailVerified` on session or re-query DB)
-- Use Resend SDK (`resend` npm package) for sending email
-- Email sender: use a verified domain or `onboarding@resend.dev` for dev
+<!-- Add notes here -->
 
 ## History
+
+### Email Verification on Register — Completed
+
+Resend verification email on registration; unverified users blocked from dashboard; OAuth users auto-verified.
+
+- `src/lib/email.ts`: Resend client + `sendVerificationEmail(email, token, baseUrl)` helper
+- `src/app/api/auth/register/route.ts`: generates a 24h `VerificationToken`, sends email after user creation
+- `src/app/api/auth/verify-email/route.ts`: GET handler — validates token, sets `emailVerified`, deletes token, redirects to `/sign-in?verified=true`
+- `src/app/verify-email/page.tsx`: "Check your email" page shown after registration (displays email from `?email=` param)
+- `src/auth.config.ts`: added `session` callback to copy `emailVerified` from JWT into session for middleware use
+- `src/auth.ts`: added `signIn` callback (auto-verifies OAuth users); `jwt` callback stores `emailVerified` in token on sign-in
+- `src/proxy.ts`: redirects verified-but-signed-in users without `emailVerified` to `/verify-email`
+- `src/types/next-auth.d.ts`: added `emailVerified: Date | null` to `Session` and `JWT` type augmentations
+- `src/app/sign-in/page.tsx`: handles `?verified=true` (success toast) and `?error=invalid-token` (error message)
+- `src/app/register/page.tsx`: redirects to `/verify-email?email=<email>` instead of sign-in on success
+- `scripts/reset-users.ts`: utility (`npm run db:reset-users`) to delete all users except `demo@devstash.io`
 
 ### Auth UI — Sign In, Register & Sign Out — Completed
 
