@@ -42,3 +42,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local tool config (may contain secrets or machine-specific state)
+.mcp.json
+.claude/settings.local.json
+.claude/agent-memory/
+.playwright-mcp/
