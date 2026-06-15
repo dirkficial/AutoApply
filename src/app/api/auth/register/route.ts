@@ -3,10 +3,15 @@ import bcrypt from 'bcryptjs'
 import { randomUUID } from 'crypto'
 import { db } from '@/lib/db'
 import { sendVerificationEmail } from '@/lib/email'
+import { checkRateLimit, getIP, tooManyRequestsResponse } from '@/lib/rate-limit'
 
 const emailVerificationEnabled = process.env.REQUIRE_EMAIL_VERIFICATION !== 'false'
 
 export async function POST(req: NextRequest) {
+  const ip = getIP(req)
+  const rl = await checkRateLimit(`register:${ip}`, 3, '1 h')
+  if (!rl.success) return tooManyRequestsResponse(rl.reset)
+
   const body = await req.json()
   const { name, email, password, confirmPassword } = body
 

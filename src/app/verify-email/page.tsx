@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { Mail, Zap } from 'lucide-react'
+import { ResendButton } from './resend-button'
 
 function VerifyEmailContent({ email }: { email: string | null }) {
   return (
@@ -32,6 +33,8 @@ function VerifyEmailContent({ email }: { email: string | null }) {
           <p className="text-xs text-muted-foreground">
             Click the link in the email to verify your account. The link expires in 24 hours.
           </p>
+
+          {email && <ResendButton email={email} />}
         </div>
 
         <p className="text-center text-sm text-muted-foreground">

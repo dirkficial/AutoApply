@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { db } from '@/lib/db'
+import { checkRateLimit, getIP, tooManyRequestsResponse } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
+  const ip = getIP(req)
+  const rl = await checkRateLimit(`reset-password:${ip}`, 5, '15 m')
+  if (!rl.success) return tooManyRequestsResponse(rl.reset)
+
   const { token, email, password } = await req.json()
 
   if (!token || !email || !password) {

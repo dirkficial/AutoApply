@@ -1,10 +1,15 @@
-import NextAuth from 'next-auth'
+import NextAuth, { CredentialsSignin } from 'next-auth'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import GitHub from 'next-auth/providers/github'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import { db } from '@/lib/db'
 import authConfig from './auth.config'
+import { checkRateLimit, getIP } from '@/lib/rate-limit'
+
+class RateLimitedError extends CredentialsSignin {
+  code = 'rate_limited'
+}
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(db),
@@ -18,19 +23,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, request) {
         if (!credentials?.email || !credentials?.password) return null
 
-        const user = await db.user.findUnique({
-          where: { email: credentials.email as string },
-        })
+        const ip = getIP(request)
+        const email = credentials.email as string
+        const rl = await checkRateLimit(`login:${ip}:${email}`, 5, '15 m')
+        if (!rl.success) throw new RateLimitedError()
+
+        const user = await db.user.findUnique({ where: { email } })
 
         if (!user?.password) return null
 
-        const valid = await bcrypt.compare(
-          credentials.password as string,
-          user.password,
-        )
+        const valid = await bcrypt.compare(credentials.password as string, user.password)
 
         return valid ? user : null
       },
