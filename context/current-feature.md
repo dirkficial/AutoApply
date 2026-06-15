@@ -1,51 +1,31 @@
-# Current Feature — Rate Limiting for Auth
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add rate limiting to all auth-related API routes to prevent brute force, credential stuffing, and email-sending abuse
-- Create `src/lib/rate-limit.ts` utility using Upstash Redis + `@upstash/ratelimit`
-- Return 429 Too Many Requests with `Retry-After` header and user-friendly error JSON
-- Display 429 errors as toast notifications on the frontend
-- Rate limiting must fail open (allow request) if Upstash is unavailable
+<!-- Add goals here -->
 
 ## Notes
 
-### Endpoints and Limits
-
-| Endpoint | Limit | Window | Key By |
-|----------|-------|--------|--------|
-| `/api/auth/callback/credentials` (login) | 5 attempts | 15 min | IP + email |
-| `/api/auth/register` | 3 attempts | 1 hour | IP |
-| `/api/auth/forgot-password` | 3 attempts | 1 hour | IP |
-| `/api/auth/reset-password` | 5 attempts | 15 min | IP |
-| `/api/auth/resend-verification` | 3 attempts | 15 min | IP + email |
-
-### Implementation Details
-
-- Use sliding window algorithm
-- Extract IP from `x-forwarded-for` header (Vercel) or request
-- Combine IP + identifier (email) where applicable for tighter limits
-- Rate limit utility returns `{ success, remaining, reset }`
-- API returns: `{ error: "Too many attempts. Please try again in X minutes." }`
-- Login limiting with NextAuth credentials requires custom sign-in handler
-
-### Environment Variables Needed
-
-```
-UPSTASH_REDIS_REST_URL=
-UPSTASH_REDIS_REST_TOKEN=
-```
-
-### Constraints
-
-- Upstash free tier: 10k requests/day (sufficient for auth limiting)
-- Fail open: if Upstash is down, requests pass through
+<!-- Add notes here -->
 
 ## History
+
+### Rate Limiting for Auth — Completed
+
+Sliding window rate limiting on all auth endpoints using Upstash Redis. Fails open (allows request) if Upstash is unavailable or unconfigured.
+
+- `src/lib/rate-limit.ts`: Upstash Redis singleton + `getLimiter()` cache; `getIP()` extracts from `x-forwarded-for`; `checkRateLimit()` returns `{ success, remaining, reset }`; `tooManyRequestsResponse()` returns 429 with `Retry-After` header
+- `src/app/api/auth/register/route.ts`: 3 req/hr by IP
+- `src/app/api/auth/forgot-password/route.ts`: 3 req/hr by IP
+- `src/app/api/auth/reset-password/route.ts`: 5 req/15min by IP
+- `src/auth.ts`: login limited 5 req/15min by IP+email via `RateLimitedError extends CredentialsSignin` (code `rate_limited`) thrown from `authorize()`
+- `src/app/sign-in/sign-in-form.tsx`: checks `result?.error === 'rate_limited'` and shows "Too many login attempts" instead of generic credential error
+- `src/app/api/auth/resend-verification/route.ts`: new `POST` endpoint — 3 req/15min by IP+email; always returns `{ ok: true }` to avoid email enumeration; sends new 24h token
+- `src/app/verify-email/resend-button.tsx`: client component with loading/sent/error states; surfaces 429 error message inline
 
 ### Profile Page — Completed
 
