@@ -65,7 +65,9 @@ export function SignInForm({ callbackUrl, registered, verified, reset, urlError 
 
     setLoading(false)
 
-    if (result?.error) {
+    if (result?.error === 'rate_limited') {
+      setError('Too many login attempts. Please try again later.')
+    } else if (result?.error) {
       setError('Invalid email or password.')
     } else {
       router.push(callbackUrl)
